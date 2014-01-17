@@ -1,11 +1,14 @@
 CC=gcc
 CFLAGS=-Wall -std=c99 -g
 
-EXE= impl-1
+EXE= test_hash
 
 all: $(EXE)
 
-impl-1: main.o hash.o
+test_hash: main.o hash.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+test_corpus: main.o corpus.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 clean:
