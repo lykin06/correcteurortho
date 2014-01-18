@@ -5,7 +5,7 @@ EXE= test_hash
 
 all: $(EXE)
 
-test_hash: main.o hash.o
+test1: test1.o hash.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 test_corpus: main.o corpus.o

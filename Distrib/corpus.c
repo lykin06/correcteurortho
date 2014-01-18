@@ -19,7 +19,7 @@ int init_corpus_from_file(char *filename) {
 	int sz = SIZE;
 	char *buffer = malloc(SIZE);
 	
-	//hash_table_create();
+	hash_table_create();
 	
 	stream = fopen(filename, "r"); 
 	if(stream == NULL) { 

@@ -21,7 +21,8 @@ int hash_table_is_present(char *word) {
 	ep = hsearch(e, FIND);
 
 	//hash.c:24:18: attention : transtypage d'un pointeur vers un entier de taille différente [-Wpointer-to-int-cast]
-	int i = ep ? 0: (int) ep->data;
+	//int i = ep ? 0: (int) ep->data;
+	int *i = (int *) ep->data;
 
 	return i;
 //(ep ? (int)(ep->data) : 0);
@@ -31,7 +32,7 @@ int hash_table_is_present(char *word) {
 
 int hash_table_search(char *word) {
 	int data = hash_table_is_present(word);
-	if(data) {
+	if(data==0) {
 		printf("%s n'est pas present dans la table.\n", word);
 		return 0;
 	}
@@ -44,7 +45,7 @@ void hash_table_add(char *word) {
 	int i = hash_table_is_present(word);
 
 	//hash.c:47:9: attention : assignment makes pointer from integer without a cast [enabled by default]
-	e.data = ++i;
+	e.data = i + 1;
 
 	if(i) {
 		hsearch(e, ENTER);
