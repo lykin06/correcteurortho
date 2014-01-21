@@ -9,7 +9,7 @@ test1: test1.o hash.o
 	$(CC) $(CFLAGS) -o test1 test1.o hash.o
 
 test2: test2.o hash.o corpus.o
-	$(CC) $(CFLAGS) test2 test2.o hash.o corpus.o
+	$(CC) $(CFLAGS) -o test2 test2.o hash.o corpus.o
 
 correcteur: main.o hash.o corpus.o correct.o
 	$(CC) $(CFLAGS) -o correcteur main.o hash.o corpus.o correct.o

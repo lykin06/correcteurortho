@@ -16,6 +16,75 @@
 #include "hash.h"
 
 
+int deletions(char* word, char** possibles,int index) {
+	int i,j,k;
+
+	// Boucle pour augmenter l'indice de la lettre a supprimer	
+	for(i=0; i<strlen(word); ++i) {
+		char *new_word = malloc(1000);
+		// Boucle pour parcourir le mot
+		for(j=0,k=0; j<strlen(word); ++j) {
+			if(j==i) {
+				continue; // On saute cet lettre
+			}
+			*(new_word+k)=*(word+j);
+			++k;
+		}
+		// On ajoute le mot cree à la liste et on incremente l'index
+		printf("%s\n",new_word);
+		possible[index++] = new_word;
+	}
+	return index;
+}
+
+int transpositions(char* word, char** possibles,int index) {
+	int i,j,k;
+	
+	// Boucle pour augmenter l'indice de la lettre a echanger	
+	for(i=0; i<(strlen(word)-1); ++i) {
+		char *new_word = malloc(1000);
+		// Boucle pour parcourir le mot
+		for(j=0,k=0; j<strlen(word); ++j) {
+			if(j==i) {
+				*(new_word+k)=word[j+1];
+				++k;
+				*(new_word+k)=word[j];
+				++k;
+				++j; // On augmente l'indice car on a deja ajoute la prochaine lettre
+			}
+			*(new_word+k)=*(word+j);
+			++k;
+		}
+		// On ajoute le mot cree à la liste et on incremente l'index
+		printf("%s\n",new_word);
+		possible[index++] = new_word;
+	}
+	return index;
+}
+
+int alterations(char* word, char** possibles,int index) {
+	int i,j,k;
+
+	// Boucle pour augmenter l'indice de la lettre a changer	
+	for(i=0,k=0; i<(strlen(word)*26); ++i,++k) {
+		if(k==strlen(word)) k=0;
+		char *new_word = malloc(1000);
+		// Boucle pour parcourir le mot
+		for(j=0; j<strlen(word); ++j) {
+			if(j==k) {
+				*(new_word+j)=ALPHABET[i%26];
+			}
+			*(new_word+j)=*(word+j);
+		}
+		// On ajoute le mot cree à la liste et on incremente l'index
+		printf("%s\n",new_word);
+		possible[index++] = new_word;
+		++k;
+	}
+	return index;
+}
+
+
 static char *find_corrections(char *word)
 {
   char **possibles = allocate_possibles(strlen(word));
