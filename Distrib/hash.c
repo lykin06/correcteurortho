@@ -15,39 +15,45 @@ void hash_table_destroy(void) {
 }
 
 int hash_table_is_present(char *word) {
-	if (word) return 0;
-
 	e.key = word;
 	ep = hsearch(e, FIND);
 
-	//hash.c:24:18: attention : transtypage d'un pointeur vers un entier de taille différente [-Wpointer-to-int-cast]
-	//int i = ep ? 0: (int) ep->data;
-	int *i = (int *) ep->data;
-
-	return i;
-//(ep ? (int)(ep->data) : 0);
-//(ep ? ep->key : "NULL", ep ? (int)(ep->data) : 0);
-//(ep->key == "NULL" ? 0: (int)(ep->data));
+	// On a pas trouvé l'entrée
+	if(ep == NULL) {
+		return 0;
+	}
+	return 1;
 }
 
 int hash_table_search(char *word) {
-	int data = hash_table_is_present(word);
-	if(data==0) {
-		printf("%s n'est pas present dans la table.\n", word);
-		return 0;
+	if(hash_table_is_present(word) == 1) {
+		return (int) ep->data;
 	}
-	printf("%s est present %d fois.\n", word, data);
-	return data;
+	return 0;
 }
 
 void hash_table_add(char *word) {
-	e.key = word;
-	int i = hash_table_is_present(word);
 
-	//hash.c:47:9: attention : assignment makes pointer from integer without a cast [enabled by default]
-	e.data = i + 1;
+	char* lower=malloc(sizeof(word));
+	int i;
+	for(i=0;*(word+i);++i){
+		if(*(word+i)>='A' && *(word+i)<='Z'){
+			char letter=*(word+i);
+			*(lower+i)=letter+'a'-'A';
+		}
+		else{
+			*(lower+i)=*(word+i);
+		}
+	}
 
-	if(i) {
-		hsearch(e, ENTER);
+	e.key=lower;
+	ep=hsearch(e,FIND);
+	if (ep==NULL) {
+		ENTRY newEntry;
+		newEntry.key=lower;
+		newEntry.data=1;
+		hsearch(newEntry,ENTER);
+	} else {
+		ep->data++;
 	}
 }
