@@ -5,7 +5,7 @@
 #include "corpus.h"
 #include "hash.h"
 
-#define SIZE 50
+#define SIZE 1000
 
 int init_corpus_from_file(char *filename) {
 
@@ -15,39 +15,31 @@ int init_corpus_from_file(char *filename) {
 	printf("%s\n",strtok(NULL," "));
 	*/
 
-	FILE *stream;
-	int ch;
-	int i = 0;
-	int sz = SIZE;
-	char *buffer = malloc(SIZE);
+	char buffer[SIZE];
+	char *word;
 	
 	//	Creation de la hash map
 	hash_table_create();
 	
 	//	Ouverture du fichier en lecture
-	stream = fopen(filename, "r"); 
+	FILE *stream = fopen(filename, "r");
 	if(stream == NULL) { 
-		Error("Unable to open file");
+		printf("Unable to open file");
+		return 0;
 	}
 
 	// On parcours notre fichier ligne par ligne
-	while (((ch = getc(stream)) != EOF) {
-		if (ch == "\n") {
-			buffer[i] = ch;
-			
-
-
-			/* ajouter les mots de la ligne dans le fichier */
-		} else {
-			if (i == sz - 1) {
-		  		sz = sz + sz/2;
-		  		buffer = realloc(buffer, sz);
+	while ( ( fgets(buffer,SIZE,stream) ) !=NULL) {
+		// On decoupe la ligne mot par mot avec strtok
+		word = strtok(buffer,SEPARATORS);
+		while(word) {
+			if(word != '\0' || word != NULL) {
+				hash_table_add(word);
 			}
-			buffer[i++] = c;
+			word = strtok(NULL,SEPARATORS);	
 		}
 		
 	}
- 	printf("%s\n",buffer);
-	free(buffer);
 	fclose(stream);
+	return 1;
 }

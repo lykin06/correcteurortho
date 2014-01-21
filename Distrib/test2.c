@@ -16,7 +16,7 @@
 int main(void)
 {
   hash_table_create();
-  if (! init_corpus_from_file("Data/strtok.txt"))
+  if (! init_corpus_from_file("./Data/strtok.txt"))
     return EXIT_FAILURE;
 
   /* On teste quelque mots */
