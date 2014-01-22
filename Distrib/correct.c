@@ -19,7 +19,7 @@
 int deletions(char* word, char** possibles,int index) {
 	int i,j,k,l=1;
 	int length = strlen(word);
-	printf("deletions (%d mots):\n",length);
+	//printf("deletions (%d mots):\n",length);
 
 	// Boucle pour augmenter l'indice de la lettre a supprimer	
 	for(i=0; i<length; ++i) {
@@ -33,7 +33,7 @@ int deletions(char* word, char** possibles,int index) {
 			++k;
 		}
 		// On ajoute le mot cree à la liste et on incremente l'index
-		printf("%d. %s\n",l,new_word);
+		//printf("%d. %s\n",l,new_word);
 		++l;
 		possibles[index++] = new_word;
 	}
@@ -43,7 +43,7 @@ int deletions(char* word, char** possibles,int index) {
 int transpositions(char* word, char** possibles,int index) {
 	int i,j,k,l=1;
 	int length = strlen(word);
-	printf("transpositions (%d mots):\n", length-1);
+	//printf("transpositions (%d mots):\n", length-1);
 	// Boucle pour augmenter l'indice de la lettre a echanger	
 	for(i=0; i<(length-1); ++i) {
 		char *new_word = malloc(1000);
@@ -61,7 +61,7 @@ int transpositions(char* word, char** possibles,int index) {
 			++k;
 		}
 		// On ajoute le mot cree à la liste et on incremente l'index
-		printf("%d. %s\n",l,new_word);
+		//printf("%d. %s\n",l,new_word);
 		++l;
 		possibles[index++] = new_word;
 	}
@@ -71,7 +71,7 @@ int transpositions(char* word, char** possibles,int index) {
 int alterations(char* word, char** possibles,int index) {	
 	int i,j,k,l=1;
 	int length = strlen(word);
-	printf("alterations (%d mots):\n", 26*length);
+	//printf("alterations (%d mots):\n", 26*length);
 
 	// Boucle pour augmenter l'indice de la lettre a changer	
 	for(i=0,k=0; i<(length*26); ++i) {
@@ -90,7 +90,7 @@ int alterations(char* word, char** possibles,int index) {
 			*(new_word+j)=*(word+j);
 		}
 		// On ajoute le mot cree à la liste et on incremente l'index
-		printf("%d. %s\n",l,new_word);
+		//printf("%d. %s\n",l,new_word);
 		++l;
 		possibles[index++] = new_word;
 	}
@@ -98,12 +98,12 @@ int alterations(char* word, char** possibles,int index) {
 }
 
 int inserts(char* word, char** possibles,int index) { 
-	int i,j,k,l=1,m;
+	int i,j,k=0,l=1,m;
 	int length = strlen(word);
-	printf("alterations (%d mots):\n", 26*(length+1));
+	//printf("inserts (%d mots):\n", 26*(length+1));
 
 	//On parcourt tous les emplacements et combinaisons d'insertion possibles
-        for (i=0,k=0;i<(length+1)*26;i++){
+        for (i=0;i<(length+1)*26;i++){
 			if(i==(26*(k+1))) {
 				++k;
 			}
@@ -121,7 +121,7 @@ int inserts(char* word, char** possibles,int index) {
 			}	
 
 			//On le place dans la liste des corrections possibles
-			printf("%d. %s\n",l,new_word);
+			//printf("%d. %s\n",l,new_word);
 			++l;
             possibles[index++] = new_word;
         }
@@ -130,13 +130,13 @@ int inserts(char* word, char** possibles,int index) {
 
 char* better_candidate(char* word, char** possibles, int index){
 	int i, data, best=0;
-	char* best_candidate;
+	char* best_candidate = word;
 	
 	// On parcourt toutes les corrections
 	for(i=0; i<index; ++i){
 		// Pointeur sur la ieme correction
 		char *candidate=*(possibles+i);
-		printf("%s\n",candidate);
+		//printf("%s\n",candidate);
 
 		// On regarde s'il est dans la table
 		data = hash_table_search(candidate);
@@ -150,14 +150,17 @@ char* better_candidate(char* word, char** possibles, int index){
 	return best_candidate;
 }
 
+/*
+	CETTE METHODE NE MARCHE PAS
+*/
 void destroy_possibles(char** possibles, int index){
-	int i;
+	/*int i;
 	//On supprime chaque élément 1 par 1
 	for(i=0;i<index;i++){
-		free(*possibles+i);
+		free(**(possibles+i));
 	}
 	//Puis on supprime la liste elle-même
-	free(possibles);
+	free(*possibles);*/
 }
 
 char** allocate_possibles(int length_word) {
