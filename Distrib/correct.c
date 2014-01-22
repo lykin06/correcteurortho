@@ -17,13 +17,15 @@
 
 
 int deletions(char* word, char** possibles,int index) {
-	int i,j,k;
+	int i,j,k,l=1;
+	int length = strlen(word);
+	printf("deletions (%d mots):\n",length);
 
 	// Boucle pour augmenter l'indice de la lettre a supprimer	
-	for(i=0; i<strlen(word); ++i) {
+	for(i=0; i<length; ++i) {
 		char *new_word = malloc(1000);
 		// Boucle pour parcourir le mot
-		for(j=0,k=0; j<strlen(word); ++j) {
+		for(j=0,k=0; j<length; ++j) {
 			if(j==i) {
 				continue; // On saute cette lettre
 			}
@@ -31,13 +33,15 @@ int deletions(char* word, char** possibles,int index) {
 			++k;
 		}
 		// On ajoute le mot cree à la liste et on incremente l'index
-		printf("%s\n",new_word);
-		possible[index++] = new_word;
+		printf("%d. %s\n",l,new_word);
+		++l;
+		possibles[index++] = new_word;
 	}
 	return index;
 }
 
 int transpositions(char* word, char** possibles,int index) {
+	printf("transpositions:\n");
 	int i,j,k;
 	
 	// Boucle pour augmenter l'indice de la lettre a echanger	
@@ -51,18 +55,20 @@ int transpositions(char* word, char** possibles,int index) {
 				*(new_word+k)=word[j];
 				++k;
 				++j; // On augmente l'indice car on a deja ajoute la prochaine lettre
+				continue;
 			}
 			*(new_word+k)=*(word+j);
 			++k;
 		}
 		// On ajoute le mot cree à la liste et on incremente l'index
 		printf("%s\n",new_word);
-		possible[index++] = new_word;
+		possibles[index++] = new_word;
 	}
 	return index;
 }
 
 int alterations(char* word, char** possibles,int index) {
+	printf("alterations:\n");	
 	int i,j,k;
 	// Boucle pour augmenter l'indice de la lettre a changer	
 	for(i=0,k=0; i<(strlen(word)*26); ++i,++k) {
@@ -77,14 +83,15 @@ int alterations(char* word, char** possibles,int index) {
 		}
 		// On ajoute le mot cree à la liste et on incremente l'index
 		printf("%s\n",new_word);
-		possible[index++] = new_word;
+		possibles[index++] = new_word;
 		++k;
 	}
 	return index;
 }
 
 int inserts(char* word, char** possibles,int index) { 
-        int i,j,k;
+	printf("inserts:\n");       
+	int i,j,k;
 	//On parcourt tous les emplacements et combinaisons d'insertion possibles
         for (i=0,k=0;i<(strlen(word)+1)*26;i++){
                 char * new_word=malloc(1000);
@@ -106,8 +113,7 @@ int inserts(char* word, char** possibles,int index) {
                 }
 
 		//On le place dans la liste des corrections possibles
-                *(posibles+index)=new_word;
-                index++;
+                possibles[index++] = new_word;
         }
         return index;
 }
@@ -116,7 +122,7 @@ char* better_candidate(char* word, char** possibles, int index){
 	  int i;
 	  ENTRY best,*e;
 	  ENTRY entry_possible;
-	  for(i=0;i<index;i++){
+	  for(i=0; i<index; ++i){
 		 char* possible=*(possibles+i);
 		 entry_possible.key=possible;
 		 e=hsearch(entry_possible,FIND);
@@ -137,6 +143,26 @@ void destroy_possibles(char** possibles, int index){
 	}
 	//Puis on supprime la liste elle-même
 	free(possibles);
+}
+
+char** allocate_possibles(int length_word) {
+	/*
+		calcule du nombre de candidats:
+		deletions : 		length_word				1*length_word
+		transpositions : 	length_word-1 			2*length_word-1
+		alterations : 		26*length_word 			28*length_word-1
+		inserts :			26*length_word+26		54*length_word+25
+	*/
+	int nb_candidates = 54*length_word+25;
+	int i;
+	
+	// Allocation de la liste:
+	char** possibles=malloc(nb_candidates);
+	for(i=0; i<nb_candidates; ++i) {
+		*(possibles+i)=malloc(length_word+1);
+	}
+
+	return possibles;
 }
 
 static char *find_corrections(char *word)
