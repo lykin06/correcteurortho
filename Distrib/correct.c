@@ -25,7 +25,7 @@ int deletions(char* word, char** possibles,int index) {
 		// Boucle pour parcourir le mot
 		for(j=0,k=0; j<strlen(word); ++j) {
 			if(j==i) {
-				continue; // On saute cet lettre
+				continue; // On saute cette lettre
 			}
 			*(new_word+k)=*(word+j);
 			++k;
@@ -64,7 +64,6 @@ int transpositions(char* word, char** possibles,int index) {
 
 int alterations(char* word, char** possibles,int index) {
 	int i,j,k;
-
 	// Boucle pour augmenter l'indice de la lettre a changer	
 	for(i=0,k=0; i<(strlen(word)*26); ++i,++k) {
 		if(k==strlen(word)) k=0;
@@ -84,6 +83,61 @@ int alterations(char* word, char** possibles,int index) {
 	return index;
 }
 
+int inserts(char* word, char** possibles,int index) { 
+        int i,j,k;
+	//On parcourt tous les emplacements et combinaisons d'insertion possibles
+        for (i=0,k=0;i<(strlen(word)+1)*26;i++){
+                char * new_word=malloc(1000);
+
+                //On recopie le mot initial dans le nouveau mot jusqu'à atteindre l'indice d'insertion
+                for (j=0;j<i/26;j++){
+                        *(new_word+j)=word[k];
+                        k++;
+                }
+
+		//On insère le caractère au bon endroit
+                *(new_word+j)=ALPHABET[i%26];
+                j++;
+
+                //On recopie le reste du mot initial dans le nouveau mot
+                for (;j<(strlen(word)+1);j++){
+                        *(new_word+j)=word[k];
+                        k++;
+                }
+
+		//On le place dans la liste des corrections possibles
+                *(posibles+index)=new_word;
+                index++;
+        }
+        return index;
+}
+
+char* better_candidate(char* word, char** possibles, int index){
+	  int i;
+	  ENTRY best,*e;
+	  ENTRY entry_possible;
+	  for(i=0;i<index;i++){
+		 char* possible=*(possibles+i);
+		 entry_possible.key=possible;
+		 e=hsearch(entry_possible,FIND);
+		 if(e==NULL){
+			if(e->data>best.data){
+				*e=best;
+			}
+		 }
+	  }
+	return best.key;
+}
+
+void destroy_possibles(char** possibles, int index){
+	int i;
+	//On supprime chaque élément 1 par 1
+	for(i=0;i<index;i++){
+		free(*possibles+i);
+	}
+	//Puis on supprime la liste elle-même
+	free(possibles);
+}
 
 static char *find_corrections(char *word)
 {
